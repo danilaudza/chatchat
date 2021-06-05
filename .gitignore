@@ -12,3 +12,4 @@ App\Firebase\firebaseConfig.js
 
 # macOS
 .DS_Store
+App/Firebase/firebaseConfig.js
