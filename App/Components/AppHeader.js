@@ -8,7 +8,7 @@ class AppHeader extends Component {
         const { title, onPress, navigation } = this.props;
         return (
             <View style={{ height: 60 }}>
-                <View style={[styles.gradient, { paddingTop: 5, backgroundColor: '#fff' }]}>
+                <View style={[styles.gradient, { paddingTop: 5, backgroundColor: '#6B48DE' }]}>
                     <View style={styles.headerView}>
                         {title === "Messages" ?
                             <View style={{ width: '10%' }}>
@@ -17,16 +17,17 @@ class AppHeader extends Component {
                             :
                             <View style={{ alignItems: 'flex-start' }}>
                                 <TouchableOpacity style={styles.iconView} onPress={() => { navigation.goBack(null) }}>
-                                    <Icons name="arrow-back" size={25} color="#000" />
+                                    <Icons name="arrow-back" size={25} color="#fff" />
                                 </TouchableOpacity>
+                                
                             </View>
                         }
-                        <View style={{ width: '80%', alignItems: 'center' }}>
+                        <View style={{ width: '80%', alignItems: title === "Messages" ? 'center' : 'flex-start'}}>
                             <Text style={[styles.textView, { fontSize: 25, fontWeight: 'bold' }]}>{title}</Text>
                         </View>
                         {title === "Messages" ? <View style={{ width: '10%', alignItems: 'flex-end', marginLeft: 10 }}>
                             <TouchableOpacity style={styles.iconView} onPress={() => { onPress() }}>
-                                <Icons name="logout" size={25} color="#000" />
+                                <Icons name="logout" size={25} color="#fff" style={{ }}/>
                             </TouchableOpacity>
                         </View> : null}
                     </View>
@@ -57,7 +58,7 @@ const styles = StyleSheet.create({
     textView: {
         fontSize: 20,
         lineHeight: 28,
-        color: '#000',
+        color: '#fff',
     }
 });
 

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { TouchableOpacity, Text, View ,StyleSheet} from 'react-native';
+import { windowHeight, windowWidth } from '../Components/Dimensions';
 
 class ButtonComponent extends Component {
     render() {
@@ -16,6 +17,8 @@ class ButtonComponent extends Component {
 
 const styles = StyleSheet.create({
     button:{
+        marginTop: 10,
+        marginBottom: 10,
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%',
@@ -29,12 +32,13 @@ const styles = StyleSheet.create({
         marginBottom: 5,
         width: '85%',
         paddingHorizontal: 6,
-        backgroundColor: '#fff',
+        backgroundColor: '#6B48DE',
         margin: 10
     },
     textStyle: {
         fontSize: 18,
-        fontWeight:'bold'
+        fontWeight:'bold',
+        color: '#fff'
     }
 });
 

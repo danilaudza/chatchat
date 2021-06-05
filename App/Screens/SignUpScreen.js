@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { View } from 'react-native';
+import { View, StyleSheet, StatusBar, Text, TouchableOpacity} from 'react-native';
 import TextInputComponent from '../Components/TextInputComponent'
 import ButtonComponent from '../Components/ButtonComponent'
 import {SignUp} from '../Firebase/SignUp';
@@ -51,18 +51,48 @@ class SignUpSCR extends Component{
     }
     render() {
         return(
-            <View style={{flex: 1, backgroundColor: '#000', justifyContent: 'center', alignItems: 'center'}}> 
+            <View style={styles.container}> 
+            <StatusBar barStyle='dark-content'/>
+            {/* <View style={{flex: 1, backgroundColor: '#000', justifyContent: 'center', alignItems: 'center'}}>  */}
+            <Text style={styles.text}>Register </Text>
             <TextInputComponent placeholder="Enter Name" updateFields={(text) => this.setState({ name: text })} />
                 <TextInputComponent placeholder="Enter Email" updateFields={(text) => this.setState({ email: text })} />
                 <TextInputComponent placeholder="Enter Password" updateFields={(text) => this.setState({ password: text })} />
                 <ButtonComponent title="Sign Up" onPress={() => { this.SignUptoFirebase() }} />
+                <TouchableOpacity onPress={() => { this.props.navigation.navigate('Login') }}>
+                    <Text style={styles.navButtonText}>Have an account? Sign in</Text>
+                </TouchableOpacity>
                 <Spinner
                     visible={this.state.loader}
-
                 />
             </View>
         )
     }
 }
 
+const styles = StyleSheet.create({
+    container: {
+        backgroundColor: '#f9fafd',
+        flex:1,
+        // justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+        // paddingTop: 50,
+      },
+      text: {
+        fontSize: 54,
+        marginBottom: 10,
+        padding: 20,
+        paddingTop: '10%',
+        paddingBottom: '10%',
+        color: '#6B48DE',
+        alignSelf: 'flex-start',
+      },
+      navButtonText: {
+        fontSize: 18,
+        fontWeight: '500',
+        color: '#6B48DE',
+        alignSelf: 'center'
+    },
+})
 export default SignUpSCR

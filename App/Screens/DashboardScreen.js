@@ -1,12 +1,14 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { Component } from 'react';
-import {View, Text, TouchableOpacity, FlatList, Image } from 'react-native';
+import {View, Text, TouchableOpacity, FlatList, Image, StatusBar} from 'react-native';
 import firebase from '../Firebase/firebaseConfig'
 import Spinner from 'react-native-loading-spinner-overlay'
 import {launchCamera,launchImageLibrary} from 'react-native-image-picker'
 import AppHeader from '../Components/AppHeader'
 import {UpdateUserImage} from '../Firebase/Users'
 import ImgToBase64 from 'react-native-image-base64'
+import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
 
 class Dashboard extends Component {
     state = {
@@ -104,24 +106,47 @@ class Dashboard extends Component {
         })
     }
 
-    openGallery() {
-        launchImageLibrary('photo', (response) => {
+    async openGallery() {
+        let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+        if (permissionResult.granted === false) {
+            alert("Permission to access camera roll is required!");
+            return;
+        }
+
+        let pickerResult = await ImagePicker.launchImageLibraryAsync();
+        // let base64 = await ImgToBase64.getBase64String(pickerResult.uri)
+        await FileSystem.readAsStringAsync(pickerResult.uri, { encoding: 'base64' })
+        .then(async (base64String) => {
             this.setState({ loader: true });
-            ImgToBase64.getBase64String(response.uri)
-                .then(async (base64String) => {
-                    const uid = await AsyncStorage.getItem('UID');
-                    let source = "data:image/jpeg;base64," + base64String;
-                    UpdateUserImage(source, uid).
-                        then(() => {
-                            this.setState({ imageUrl: response.uri, loader: false });
-                        })
+            const uid = await AsyncStorage.getItem('UID');
+            let source = "data:image/jpeg;base64," + base64String;
+            UpdateUserImage(source, uid).
+                then(() => {
+                    this.setState({ imageUrl: response.uri, loader: false });
                 })
-                .catch(err => this.setState({ loader: false }));
         })
+        .catch(err => this.setState({ loader: false }));
+        // console.log(base64);
+        // console.log(base64);
+        // launchImageLibrary('photo', (response) => {
+        //     this.setState({ loader: true });
+        //     ImgToBase64.getBase64String(response.uri)
+        //         .then(async (base64String) => {
+        //             const uid = await AsyncStorage.getItem('UID');
+        //             let source = "data:image/jpeg;base64," + base64String;
+        //             UpdateUserImage(source, uid).
+        //                 then(() => {
+        //                     this.setState({ imageUrl: response.uri, loader: false });
+        //                 })
+        //         })
+        //         .catch(err => this.setState({ loader: false }));
+        // })
     }
     render() {
         return (
-            <View style={{ flex: 1, backgroundColor: '#000' }}>
+            <View style={{ flex: 1, backgroundColor: '#fff' }}>
+                <StatusBar barStyle='default'/>
                 <AppHeader title="Messages" navigation={this.props.navigation} onPress={() => this.logOut()} />
                 <FlatList
                     alwaysBounceVertical={false}
@@ -133,7 +158,7 @@ class Dashboard extends Component {
                             <TouchableOpacity style={{ height: 90, width: 90, borderRadius: 45 }} onPress={() => { this.openGallery() }}>
                                 <Image source={{ uri: this.state.imageUrl==='' ? 'https://github.com/danilaudza/valorRankImages/blob/main/img/iron/1.png?raw=true' : this.state.imageUrl }} style={{ height: 90, width: 90, borderRadius: 45 }} />
                             </TouchableOpacity>
-                            <Text style={{ color: '#fff', fontSize: 20, marginTop: 10, fontWeight: 'bold' }}>{this.state.loggedInUserName}</Text>
+                            <Text style={{ color: '#6B48DE', fontSize: 20, marginTop: 10, fontWeight: 'bold' }}>{this.state.loggedInUserName}</Text>
                         </View>
                     }
                     renderItem={({ item }) => (
@@ -143,14 +168,14 @@ class Dashboard extends Component {
                                     <Image source={{ uri: item.imageUrl === '' ? 'https://github.com/danilaudza/valorRankImages/blob/main/img/iron/1.png?raw=true' : item.imageUrl }} style={{ height: 50, width: 50, borderRadius: 25 }} />
                                 </View>
                                 <View style={{ width: '65%', alignItems: 'flex-start', justifyContent: 'center', marginLeft: 10 }}>
-                                    <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>{item.userName}</Text>
-                                    <Text style={{ color: '#fff', fontSize: 14, fontWeight: '600' }}>{item.lastMessage}</Text>
+                                    <Text style={{ color: '#6B48DE', fontSize: 16, fontWeight: 'bold' }}>{item.userName}</Text>
+                                    <Text style={{ color: '#6B48DE', fontSize: 14, fontWeight: '600' }}>{item.lastMessage}</Text>
                                 </View>
                                 <View style={{ width: '20%', alignItems: 'flex-start', justifyContent: 'center', marginRight: 20 }}>
-                                    <Text style={{ color: '#fff', fontSize: 13, fontWeight: '400' }}>{item.lastTime}</Text>
+                                    <Text style={{ color: '#6B48DE', fontSize: 13, fontWeight: '400' }}>{item.lastTime}</Text>
                                 </View>
                             </TouchableOpacity>
-                            <View style={{ borderWidth: 0.5, borderColor: '#fff' }} />
+                            <View style={{ borderWidth: 0.5, borderColor: '#ecf0f1', width: '80%', alignSelf: 'flex-end', marginRight: 20}}/>
                         </View>
                     )}
                 />
